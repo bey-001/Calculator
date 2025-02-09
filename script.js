@@ -47,55 +47,57 @@ const keyToButtonMap = {
 /* herhangi bir tuşa basarsak bu fonksiyon çalışacak
 function(e) e parmetremiz değeri döndüreccek olan */
 
-window.addEventListener('keydown' ,function(e) {
-    if(result.innerText === "Hata"){
+window.addEventListener('keydown', function (e) {
+    if (result.innerText === "Hata") {
         result.innerText = "";
-}
-if(e.key === 'Backspace'){
-    e.preventDefault();
-    removeLastChar();
-}else if (e.key === 'Enter') {
-    e.preventDefault();
-    evaulateResult();
-}else if (keyToButtonMap.hasOwnPropety(e.key)){
-    e.preventDefault();
-    keyToButtonMap[e.key].click;
-}
-})
+    }
+    if (e.key === 'Backspace') {
+        e.preventDefault();
+        removeLastChar();
+    } else if (e.key === 'Enter') {
+        e.preventDefault();
+        evaluateResult();
+    } else if (keyToButtonMap.hasOwnProperty(e.key)) {
+        e.preventDefault();
+        keyToButtonMap[e.key].click();
+    }
+});
 
-equals.addEventListener('click', evaulateResult);
+equals.addEventListener('click', evaluateResult);
 
 document.querySelectorAll('.btn').forEach(button => {
     button.addEventListener('click', (e) => {
-        let removeLastChar = result.innerText.slice(-1);
+        let lastChar = result.innerText.slice(-1);
         let value = e.target.textContent;
 
-        if(result.innerText === "Hata") {
+        if (result.innerText === "Hata") {
             result.innerText = "";
-        }else if ( ['+', '-', '*', '.', ''] .includes(value) && ['+', '-', '*', '/', '.', ''].includes(removeLastChar)){
-        }else if (value=== "="){
-            evaulateResult();
-        }else if (value=== "AC"){
-            result.innerText = ""
-            }else if(value === "DE") {
-                removeLastChar();
-            }else{
-                result.innerText += value;
-            }
-    })
-})
+        } else if (['+', '-', '*', '/', '.', ''].includes(value) &&
+            ['+', '-', '*', '/', '.', ''].includes(lastChar)) {
+        } else if (value === "=") {
+            evaluateResult();
+        } else if (value === "AC") {
+            result.innerText = "";
+        } else if (value === "DE") {
+            removeLastChar();
+        } else {
+            result.innerText += value;
+        }
+    });
+});
 
-function evaulateResult(){
+function removeLastChar() {
     result.innerText = result.innerText.slice(0, -1);
 }
 
-function evaulateResult(){
-    let operation = result.innerText.replace(/,/g,'.');
+function evaluateResult() {
+    let operation = result.innerText.replace(/,/g, '.');
 
-    try{ const resultValue = new Function('return' + opetation)();
-        result.innerText = result.value.toString().replace(/\./g,',');
-    }catch (e){
+    try {
+        const resultValue = new Function('return ' + operation)();
+        result.innerText = resultValue.toString().replace(/\./g, ',');
+    } catch (e) {
         result.innerText = 'Hata';
-        console.error('Hatalı işlem: ',e)
+        console.error('Hatalı işlem:', e);
     }
 }
